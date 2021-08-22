@@ -24,7 +24,7 @@ import RichTextInput from "ra-input-rich-text";
 export const CommentList = (props) => (
   <List {...props}>
     <Datagrid>
-      <TextField source="title" />
+      <TextField source="name" />
       <RichTextField source="body" />
       <ShowButton label="" />
       <EditButton label="" />

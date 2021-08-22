@@ -14,7 +14,10 @@ import { firebaseConfig as config } from './FIREBASE_CONFIG';
 const options = {
   logging: true,
   disableMeta: true,
-  watch: ['articles'],
+  watch: ['articles', 'communities'],
+  relativeFilePaths: false,
+  useFileNamesInStorage: true, 
+  // dontAddIdFieldToDoc: true,
   // rootRef: 'root_collection/some_document'
 }
 const dataProvider = FirebaseDataProvider(config, options);
@@ -29,13 +32,6 @@ class App extends React.Component {
         authProvider={authProvider}
       >
         <Resource
-          name="posts"
-          list={PostList}
-          show={PostShow}
-          create={PostCreate}
-          edit={PostEdit}
-        />
-        <Resource
           name="articles"
           list={PostList}
           show={PostShow}
@@ -43,7 +39,7 @@ class App extends React.Component {
           edit={PostEdit}
         />
         <Resource
-          name="comments"
+          name="communities"
           icon={CommentIcon}
           list={CommentList}
           show={CommentShow}
