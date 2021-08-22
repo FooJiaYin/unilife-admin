@@ -1,6 +1,6 @@
 import * as React from "react";
 import { PostList, PostShow, PostCreate, PostEdit } from "./posts";
-import { CommentList, CommentShow, CommentCreate, CommentEdit } from "./comments";
+import { CommunityList, CommunityShow, CommunityCreate, CommunityEdit } from "./communities";
 import { Admin, Resource } from "react-admin";
 import {
   FirebaseDataProvider,
@@ -41,10 +41,10 @@ class App extends React.Component {
         <Resource
           name="communities"
           icon={CommentIcon}
-          list={CommentList}
-          show={CommentShow}
-          create={CommentCreate}
-          edit={CommentEdit}
+          list={CommunityList}
+          show={CommunityShow}
+          create={CommunityCreate}
+          edit={CommunityEdit}
         />
       </Admin>
     );
