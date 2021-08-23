@@ -1,13 +1,18 @@
 import * as React from "react";
-import { PostList, PostShow, PostCreate, PostEdit } from "./posts";
-import { CommunityList, CommunityShow, CommunityCreate, CommunityEdit } from "./communities";
-import { Admin, Resource } from "react-admin";
+import { ArticleList, ArticleShow, ArticleCreate, ArticleEdit } from "./articles";
+import { CommunityList, CommunityShow, CommunityCreate, CommunityEdit, DepartmentCreate } from "./communities";
+import { UserList, UserShow, UserCreate, UserEdit } from "./users";
+import { ChatroomList, ChatroomShow, ChatroomCreate, ChatroomEdit } from "./chatrooms";
+import { Admin, Resource, ListGuesser } from "react-admin";
 import {
   FirebaseDataProvider,
   FirebaseAuthProvider
 } from "react-admin-firebase";
-import CommentIcon from '@material-ui/icons/Comment';
+import CommunityIcon from '@material-ui/icons/Domain';
+import ArticleIcon from '@material-ui/icons/LibraryBooks';
+import UserIcon from '@material-ui/icons/People';
 import CustomLoginPage from './CustomLoginPage';
+import Dashboard from './dashboard';
 
 import { firebaseConfig as config } from './FIREBASE_CONFIG';
 
@@ -30,22 +35,58 @@ class App extends React.Component {
         loginPage={CustomLoginPage} 
         dataProvider={dataProvider}
         authProvider={authProvider}
+        // dashboard={Dashboard}
       >
         <Resource
+          options={{label: '文章'}} 
           name="articles"
-          list={PostList}
-          show={PostShow}
-          create={PostCreate}
-          edit={PostEdit}
+          icon={ArticleIcon}
+          list={ArticleList}
+          show={ArticleShow}
+          create={ArticleCreate}
+          edit={ArticleEdit}
         />
         <Resource
+          options={{label: '使用者'}} 
+          name="users"
+          icon={UserIcon}
+          list={UserList}
+          show={UserShow}
+          create={UserCreate}
+          edit={UserEdit}
+        />
+        <Resource
+          options={{label: '學校'}} 
           name="communities"
-          icon={CommentIcon}
+          icon={CommunityIcon}
           list={CommunityList}
           show={CommunityShow}
           create={CommunityCreate}
           edit={CommunityEdit}
         />
+        <Resource
+          options={{label: '聊天室'}} 
+          name="chatrooms"
+          icon={UserIcon}
+          list={ChatroomList}
+          show={ChatroomShow}
+          create={ChatroomCreate}
+          edit={ChatroomEdit}
+        />
+        <Resource name="communities/cgust/departments"/>
+        <Resource name="communities/cgu/departments"/>
+        <Resource name="communities/ntu/departments"/>
+        <Resource name="communities/nthu/departments"/>
+        <Resource name="communities/nctu/departments"/>
+        <Resource name="communities/scu/departments"/>
+        <Resource name="communities/nccu/departments"/>
+        <Resource name="communities/ccu/departments"/>
+        <Resource name="communities/ntnu/departments"/>
+        <Resource name="communities/fju/departments"/>
+        <Resource name="communities/shu/departments"/>
+        <Resource name="communities/tku/departments"/>
+        <Resource name="communities/all/departments"/>
+        <Resource name="communities/test/departments"/>
       </Admin>
     );
   }
