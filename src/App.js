@@ -11,6 +11,7 @@ import {
 import CommunityIcon from '@material-ui/icons/Domain';
 import ArticleIcon from '@material-ui/icons/LibraryBooks';
 import UserIcon from '@material-ui/icons/People';
+import ChatroomIcon from '@material-ui/icons/Forum';
 import CustomLoginPage from './CustomLoginPage';
 import Dashboard from './dashboard';
 
@@ -67,7 +68,7 @@ class App extends React.Component {
         <Resource
           options={{label: '聊天室'}} 
           name="chatrooms"
-          icon={UserIcon}
+          icon={ChatroomIcon}
           list={ChatroomList}
           show={ChatroomShow}
           create={ChatroomCreate}
