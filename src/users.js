@@ -36,6 +36,7 @@ const UserFilter = (props) => (
         <SelectInput optionText="name" />
     </ReferenceInput>
     <BooleanInput label="已開啟聊天" source="settings.chat" alwaysOn/>
+    <BooleanInput label="正在聊天" source="settings.inChat" alwaysOn/>
   </Filter>
 );
 
@@ -51,6 +52,7 @@ export const UserList = (props) => (
       <EmailField source="info.email" label="Email" sortable={true} />
       <TextField source="identity.grade" label="年級" sortable={true} />
       <BooleanField source="settings.chat" label="開啟聊天" sortable={true} />
+      <BooleanField source="settings.inChat" label="正在聊天" sortable={true} />
       <ShowButton label="" />
       <EditButton label="" />
       <DeleteButton label="" redirect={false}/>

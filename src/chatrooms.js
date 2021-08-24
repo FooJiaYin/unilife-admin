@@ -52,12 +52,30 @@ async function setMatchedUsers() {
   })
 }
 
+async function setChatroomCount() {
+  firebase.firestore().collection('chatrooms').get().then(querySnapshot => {
+      querySnapshot.forEach(async snapshot => {
+          let data = await snapshot.data()
+          let user = await firebase.firestore().doc('users/' + data.users[0]).get()
+          let userData = await user.data()
+          let messages = await snapshot.ref.collection('messages').get()
+          // if(data.users.length < 3) console.log(userData.identity.community, snapshot.id, data.users.length)
+          console.log(snapshot.id, data.users.length, userData.identity.community, messages.size)
+          snapshot.ref.update({
+              memberCount: data.users.length,
+              community: userData.identity.community,
+              messageCount: messages.size
+          })
+      })
+  })
+}
+
 async function match(community, triggerMatch = false) {
   let junior = []
   let senior = []
   firebase.firestore().collection('users')
       .where('identity.community', '==', community)
-      .where('settings.inChat', '==', false)
+      .where('settings.inChat', '!=', true)
       .where('settings.chat', '==', true)
       .get().then(querySnapshot => {
           // let i=0
@@ -111,15 +129,15 @@ async function match(community, triggerMatch = false) {
 }
 
 function createChatroom() {  
-  setMatchedUsers()
-  alert("10秒後進行配對")
-  setTimeout(() => {
+  // setMatchedUsers()
+  alert("開始進行配對")
+  // setTimeout(() => {
     firebase.firestore().collection('communities').get().then(querySnapshot =>
         querySnapshot.forEach(snapshot =>  
             match(snapshot.id, true)
         )
     )
-  }, 10000)
+  // }, 10000)
 }
 
 const ChatroomFilter = (props) => (
@@ -154,23 +172,28 @@ const ChatroomMembers = (props) => (
     </SingleFieldList>
   </ReferenceArrayField>
 )
-export const ChatroomList = (props) => (
-  <List {...props}  filters={<ChatroomFilter />} sort={{ field: 'startedAt', order: 'ASC' }} 
-    actions={<Button  variant="contained" color="primary" onClick={()=>createChatroom()}>聊天配對</Button>}
-  >
-    <Datagrid expand={<ChatroomMembers />} >
-      <ReferenceField label="學校" source="community" reference="communities"  sortable={true}>
-        <TextField source="name" />
-      </ReferenceField>
-      <DateField source="startedAt" label="開始時間" sortable={true} showTime={true} />
-      <TextField label="訊息數量" source="messageCount" />
-      <TextField source="id" />
-      {/* <ShowButton label="" />
-      <EditButton label="" /> */}
-      <DeleteButton label="" redirect={false}/>
-    </Datagrid>
-  </List>
-);
+export const ChatroomList = (props) => {
+  React.useEffect(() => {
+    setChatroomCount();
+  }, [])
+  return (
+    <List {...props}  filters={<ChatroomFilter />} sort={{ field: 'startedAt', order: 'ASC' }} 
+      actions={<Button  variant="contained" color="primary" onClick={()=>createChatroom()}>聊天配對</Button>}
+    >
+      <Datagrid expand={<ChatroomMembers />} >
+        <ReferenceField label="學校" source="community" reference="communities"  sortable={true}>
+          <TextField source="name" />
+        </ReferenceField>
+        <DateField source="startedAt" label="開始時間" sortable={true} showTime={true} />
+        <TextField label="訊息數量" source="messageCount" />
+        <TextField source="id" />
+        {/* <ShowButton label="" />
+        <EditButton label="" /> */}
+        <DeleteButton label="" redirect={false}/>
+      </Datagrid>
+    </List>
+  );
+}
 
 export const ChatroomShow = (props) => (
   <Show {...props}>
