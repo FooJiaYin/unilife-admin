@@ -35,7 +35,7 @@ const UserFilter = (props) => (
     <ReferenceInput label="學校" source="identity.community" reference="communities" alwaysOn >
         <SelectInput optionText="name" />
     </ReferenceInput>
-    <BooleanInput source="已開啟聊天" alwaysOn/>
+    <BooleanInput label="已開啟聊天" source="settings.chat" alwaysOn/>
   </Filter>
 );
 
