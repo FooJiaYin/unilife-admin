@@ -9,7 +9,12 @@ export async function setMatchedUsers() {
             // console.log(snapshot.id, data.settings)
             if (data.settings.inChat == true) {
                 console.log('matched', snapshot.id, data.settings)
-            } else {
+            } else if (chatHistory.size > 0) {
+                i++
+                // console.log(i, chatHistory.size)
+                console.log('matched', snapshot.id, data.settings)
+                snapshot.ref.update({ settings: { chat: false, inChat: true }})
+            } else if (chatHistory.size == 0) {
                 if (data.settings.chat == true) {
                     console.log('open', snapshot.id, data.settings)
                     snapshot.ref.update({ settings: { chat: true, inChat: false }})
@@ -17,6 +22,8 @@ export async function setMatchedUsers() {
                     console.log('not open', snapshot.id, data.settings)
                     snapshot.ref.update({ settings: { chat: false, inChat: false }})
                 }
+            } else {
+                console.log('not counted', snapshot.id, data.settings)
             }
         })
     }) 
@@ -104,7 +111,7 @@ export function createChatroom() {
     // setTimeout(() => {
       firebase.firestore().collection('communities').get().then(querySnapshot =>
           querySnapshot.forEach(snapshot =>  
-              match(snapshot.id, true)
+              match(snapshot.id, false)
           )
       )
     // }, 10000)
