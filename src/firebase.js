@@ -13,7 +13,7 @@ export async function setMatchedUsers() {
                 i++
                 // console.log(i, chatHistory.size)
                 console.log('matched', snapshot.id, data.settings)
-                snapshot.ref.update({ settings: { chat: false, inChat: true }})
+                snapshot.ref.update({ settings: { chat: data.settings.chat, inChat: true }})
             } else if (chatHistory.size == 0) {
                 if (data.settings.chat == true) {
                     console.log('open', snapshot.id, data.settings)
