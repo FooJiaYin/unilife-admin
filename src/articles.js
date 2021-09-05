@@ -82,7 +82,7 @@ export const ArticleCreate = (props) => (
       <ReferenceInput label="學校" source="community" reference="communities" formClassName={styles().inlineBlock} >
         <SelectInput optionText="name" />
       </ReferenceInput>
-      <DateTimeInput source="publishedAt" label="發佈時間" initialValue={Date.now()} formClassName={styles().inlineBlock} />
+      <DateTimeInput source="publishedAt" label="發佈時間" formClassName={styles().inlineBlock} />
       <BooleanInput source="pinned" label="置頂" initialValue={false} formClassName={styles().inlineBlock} />
       <TextInput source="meta.source" label="文章來源" />
       <TextInput source="meta.url" label="文章連結（不會顯示內文）" fullWidth={true} />

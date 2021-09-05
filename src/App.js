@@ -1,7 +1,7 @@
 import * as React from "react";
 import { ArticleList, ArticleShow, ArticleCreate, ArticleEdit } from "./articles";
 import { CommunityList, CommunityShow, CommunityCreate, CommunityEdit, DepartmentCreate } from "./communities";
-import { UserList, UserShow, UserCreate, UserEdit } from "./users";
+import { UserList, UserShow, UserCreate, UserEdit, UserEdit_editor } from "./users";
 import { ChatroomList, ChatroomShow, ChatroomCreate, ChatroomEdit } from "./chatrooms";
 import { Admin, Resource, ListGuesser } from "react-admin";
 import {
@@ -14,8 +14,9 @@ import UserIcon from '@material-ui/icons/People';
 import ChatroomIcon from '@material-ui/icons/Forum';
 import CustomLoginPage from './CustomLoginPage';
 import Dashboard from './dashboard';
-
 import { firebaseConfig as config } from './FIREBASE_CONFIG';
+import { firebase } from './FIREBASE_CONFIG';
+import { getAcessRole } from './firebase';
 
 const options = {
   logging: true,
@@ -30,8 +31,30 @@ const dataProvider = FirebaseDataProvider(config, options);
 const authProvider = FirebaseAuthProvider(config, options);
 
 class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      accessRole: 'user'
+    };
+  }
+  componentDidMount() {
+    firebase.auth().onAuthStateChanged(async user => {
+      if (user) {
+        let idTokenResult = await user.getIdTokenResult()
+        console.log(idTokenResult)
+        this.setState({ accessRole: idTokenResult.claims.role })
+      }
+    });
+    authProvider.getPermissions().then(user => {
+      if (user) {
+        this.setState({ accessRole: user.role })
+        console.log(user.role, user)
+      }
+    })
+  }
   render() {
-    return (
+  return (
+    this.state.accessRole == 'admin' ? (
       <Admin
         loginPage={CustomLoginPage} 
         dataProvider={dataProvider}
@@ -89,6 +112,44 @@ class App extends React.Component {
         <Resource name="communities/all/departments"/>
         <Resource name="communities/test/departments"/>
       </Admin>
+      ) : this.state.accessRole == 'editor' ? (
+        <Admin
+          loginPage={CustomLoginPage} 
+          dataProvider={dataProvider}
+          authProvider={authProvider}
+          // dashboard={Dashboard}
+        >
+          <Resource
+            options={{label: '文章'}} 
+            name="articles"
+            icon={ArticleIcon}
+            list={ArticleList}
+            show={ArticleShow}
+            create={ArticleCreate}
+            edit={ArticleEdit}
+          />
+          <Resource
+            options={{label: '使用者'}} 
+            name="users"
+            icon={UserIcon}
+            list={UserList}
+            show={UserShow}
+            create={UserCreate}
+            edit={UserEdit_editor}
+          />
+          <Resource name="communities"/>
+        </Admin>
+      ) : (
+        <Admin
+          loginPage={CustomLoginPage} 
+          dataProvider={dataProvider}
+          authProvider={authProvider}
+          // dashboard={Dashboard}
+        >        
+        <p>Access denied</p>
+
+        </Admin>
+      )
     );
   }
 }

@@ -68,7 +68,7 @@ const ChatroomMembers = (props) => (
 export const ChatroomList = (props) => {
   React.useEffect(() => {
     setChatroomCount();
-    setMatchedUsers();
+    // setMatchedUsers();
   }, [])
   return (
     <List {...props}  filters={<ChatroomFilter />} sort={{ field: 'startedAt', order: 'ASC' }} 

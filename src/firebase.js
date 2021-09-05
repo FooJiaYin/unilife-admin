@@ -1,5 +1,43 @@
 import { firebase } from './FIREBASE_CONFIG';
 
+export async function getAcessRole() {
+    firebase.auth().onAuthStateChanged(async user => {
+        if(user) {
+            let idTokenResult = await user.getIdTokenResult()
+            return idTokenResult.claims.role
+        }
+    })
+    let idTokenResult = await firebase.auth().currentUser.getIdTokenResult()
+    return idTokenResult.claims.role
+}
+
+
+export async function sendNotification(uid, message) {
+    let user = await firebase.firestore().doc('users/' + uid).get()
+    let token = user.data().pushToken
+    if (!token || token == '') return
+    message.to = token
+    message.sound = 'default'
+
+    await fetch('https://exp.host/--/api/v2/push/send', {
+        method: 'POST',
+        headers: {
+            Accept: 'application/json',
+            'Accept-encoding': 'gzip, deflate',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(message),
+    });
+}
+
+export async function sendGroupNotification(community, message) {
+    firebase.firestore().collection('users')
+        .where('identity.community', '==', community)
+        .get().then(querySnapshot => {
+            querySnapshot.forEach(snapshot => sendNotification(snapshot.id, message));
+        })
+}
+
 export async function setMatchedUsers() {
     firebase.firestore().collection('users').get().then(querySnapshot => {
         var i = 0
@@ -9,11 +47,12 @@ export async function setMatchedUsers() {
             // console.log(snapshot.id, data.settings)
             if (data.settings.inChat == true) {
                 console.log('matched', snapshot.id, data.settings)
+                snapshot.ref.update({ settings: { chat: true, inChat: false }})
             } else if (chatHistory.size > 0) {
                 i++
                 // console.log(i, chatHistory.size)
                 console.log('matched', snapshot.id, data.settings)
-                snapshot.ref.update({ settings: { chat: data.settings.chat, inChat: true }})
+                snapshot.ref.update({ settings: { chat: data.settings.chat, inChat: false }})
             } else if (chatHistory.size == 0) {
                 if (data.settings.chat == true) {
                     console.log('open', snapshot.id, data.settings)
@@ -99,6 +138,7 @@ export async function match(community, triggerMatch = false) {
                     for (var u of users) {
                         firebase.firestore().doc('users/' + u).collection('chatHistory').doc(newChatroom.id).set(data)
                         firebase.firestore().doc('users/' + u).update({ settings: { chat: false, inChat: true }})
+                        sendNotification(u, {title: '配對成功', body:'本週已經成功配對聊天室，馬上開始和新朋友聊天吧！', data: {}})
                     }
                 }
             }
@@ -107,12 +147,12 @@ export async function match(community, triggerMatch = false) {
   
 export function createChatroom() {  
     // setMatchedUsers()
-    alert("開始進行配對")
-    // setTimeout(() => {
+    alert("10秒後開始進行配對")
+    setTimeout(() => {
       firebase.firestore().collection('communities').get().then(querySnapshot =>
           querySnapshot.forEach(snapshot =>  
-              match(snapshot.id, false)
+              match(snapshot.id, true)
           )
       )
-    // }, 10000)
+    }, 10000)
 }
