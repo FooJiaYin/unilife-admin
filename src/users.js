@@ -18,6 +18,7 @@ import {
   TextField,
   TextInput,
   BooleanInput,
+  NullableBooleanInput,
   ShowButton,
   EditButton,
   DeleteButton,
@@ -43,9 +44,9 @@ const UserFilter = (props) => {
       <ReferenceInput label="學校" source="identity.community" reference="communities" alwaysOn >
           <SelectInput optionText="name" />
       </ReferenceInput>
-      <BooleanInput label="已驗證" source="verification.status" alwaysOn/>
-      <BooleanInput label="已開啟聊天" source="settings.chat" alwaysOn/>
-      <BooleanInput label="正在聊天" source="settings.inChat" alwaysOn/>
+      <NullableBooleanInput label="已驗證" source="verification.status" alwaysOn/>
+      <NullableBooleanInput label="已開啟聊天" source="settings.chat" alwaysOn/>
+      <NullableBooleanInput label="正在聊天" source="settings.inChat" alwaysOn/>
     </Filter>
     :
     <Filter {...props}>
@@ -54,7 +55,7 @@ const UserFilter = (props) => {
       <ReferenceInput label="學校" source="identity.community" reference="communities" alwaysOn >
           <SelectInput optionText="name" />
       </ReferenceInput>
-      <BooleanInput label="已驗證" source="verification.status" alwaysOn/>
+      <NullableBooleanInput label="已驗證" source="verification.status" alwaysOn/>
     </Filter>
   )
 }

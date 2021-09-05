@@ -14,6 +14,7 @@ import {
   SimpleForm,
   TextField,
   TextInput,
+  NullableBooleanInput,
   BooleanInput,
   ShowButton,
   EditButton,
@@ -45,6 +46,7 @@ const ChatroomFilter = (props) => (
     <ReferenceInput label="學校" source="community" reference="communities" alwaysOn >
         <SelectInput optionText="name" />
     </ReferenceInput>
+    <NullableBooleanInput  label="已開啟" source="active" alwaysOn />
   </Filter>
 );
 
@@ -79,6 +81,7 @@ export const ChatroomList = (props) => {
           <TextField source="name" />
         </ReferenceField>
         <DateField source="startedAt" label="開始時間" sortable={true} showTime={true} />
+        <BooleanField source="active" label="開啟" sortable={true} />
         <TextField label="訊息數量" source="messageCount" />
         <TextField source="id" />
         {/* <ShowButton label="" />
