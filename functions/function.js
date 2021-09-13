@@ -20,7 +20,8 @@ let defaultDatabase = defaultApp.database();
 // sendAllNotification({title: '本周配對已開放登記，馬上報名認識新朋友', body:'馬上就要開學了，想在開學前認識相同生活圈的好友？馬上打開UniLife，開啟聊天室配對卡片吧！', data: {}})
 // sendNotification('FHHdN4XzS4ZSKHksDKYiXIFaJtj1', {title: '配對成功', body:'本週已經成功配對聊天室，馬上開始和新朋友聊天吧！', data: {}})
 // setUserRole("yulin1136@gmail.com", "editor")
-setNewChatrooms()
+setArticles()
+// setNewChatrooms()
 // changeEmail("blueink@gmail.com", "blueink0910@gmail.com")
 // importDepartments(community)
 // getChatStats()
@@ -86,6 +87,17 @@ function checkEmptyChatHistory() {
                     })
                 })
             })
+        });
+    })
+}
+
+function setArticles() {
+    admin.firestore.collection('articles').get().then(querySnapshot =>{
+        querySnapshot.forEach(async snapshot => {
+            const data = await snapshot.data()
+            if(data.url && data.url != '') {
+                console.log(data.url)
+            }
         });
     })
 }
