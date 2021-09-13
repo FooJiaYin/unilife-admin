@@ -148,7 +148,7 @@ class App extends React.Component {
           // dashboard={Dashboard}
         >   
         <Resource
-          options={{label: '文章發布'}} 
+          options={{label: '文章列表'}} 
           name="articles"
           icon={ArticleIcon}
           list={ArticleList_visitor}
