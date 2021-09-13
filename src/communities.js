@@ -40,7 +40,7 @@ export const CommunityList = (props) => (
       <TextField label="名稱" source="name" />
       <ShowButton label="" />
       <EditButton label="" />
-      <DeleteButton label="" redirect={false}/>
+      {/* <DeleteButton label="" redirect={false}/> */}
     </Datagrid>
   </List>
 );
@@ -79,7 +79,7 @@ export const CommunityShow = (props) => {
 
 export const CommunityCreate = (props) => (
   <Create {...props} >
-    <SimpleForm>
+    <SimpleForm submitOnEnter={false}>
       <TextInput source="id" />
       <TextInput  label="名稱" source="name" />
     </SimpleForm>

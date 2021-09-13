@@ -73,7 +73,7 @@ export const ChatroomList = (props) => {
     // setMatchedUsers();
   }, [])
   return (
-    <List {...props}  filters={<ChatroomFilter />} sort={{ field: 'startedAt', order: 'ASC' }} 
+    <List {...props}  filters={<ChatroomFilter />} sort={{ field: 'startedAt', order: 'DESC' }} 
       actions={<Button  variant="contained" color="primary" onClick={()=>createChatroom()}>聊天配對</Button>}
     >
       <Datagrid expand={<ChatroomMembers />} >
@@ -107,7 +107,7 @@ export const ChatroomShow = (props) => (
 
 export const ChatroomCreate = (props) => (
   <Create {...props} >
-    <SimpleForm>
+    <SimpleForm submitOnEnter={false}>
       <TextInput source="id" />
       <TextInput source="info.name" label="姓名" />
       <ReferenceInput label="學校" source="identity.community" reference="communities">
@@ -119,7 +119,7 @@ export const ChatroomCreate = (props) => (
 
 export const ChatroomEdit = (props) => (
   <Edit {...props}>
-    <SimpleForm>
+    <SimpleForm submitOnEnter={false}>
       <TextInput source="id" options={{ disabled: true }} />
       <TextInput source="info.name" />
       <ReferenceInput label="學校" source="identity.community" reference="communities">

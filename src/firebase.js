@@ -11,32 +11,35 @@ export async function getAcessRole() {
     return idTokenResult.claims.role
 }
 
-
-export async function sendNotification(uid, message) {
-    let user = await firebase.firestore().doc('users/' + uid).get()
-    let token = user.data().pushToken
-    if (!token || token == '') return
-    message.to = token
-    message.sound = 'default'
-
-    await fetch('https://exp.host/--/api/v2/push/send', {
-        method: 'POST',
-        headers: {
-            Accept: 'application/json',
-            'Accept-encoding': 'gzip, deflate',
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(message),
-    });
+export async function getUserCommunity() {
+    const uid = await firebase.auth().currentUser.uid
+    const snapshot = await firebase.firestore().doc('users/' + uid).get()
+    const data = await snapshot.data()
+    console.log(data.identity.community)
+    return data.identity.community
 }
 
-export async function sendGroupNotification(community, message) {
-    firebase.firestore().collection('users')
-        .where('identity.community', '==', community)
-        .get().then(querySnapshot => {
-            querySnapshot.forEach(snapshot => sendNotification(snapshot.id, message));
-        })
+export async function cloudFunction(funcName, data) {
+    var func = firebase.functions().httpsCallable(funcName);
+    let response
+    try {
+        response = await func(data)
+        // response = {data: {title: 'aaa', abstract: 'bbbbbbbbbb'}}
+            // Read result of the Cloud Function.
+        console.log(response)
+    } catch (e) {
+        console.error(e)
+    }
+    return response
 }
+
+// export async function sendGroupNotification(community, message) {
+//     firebase.firestore().collection('users')
+//         .where('identity.community', '==', community)
+//         .get().then(querySnapshot => {
+//             querySnapshot.forEach(snapshot => sendNotification(snapshot.id, message));
+//         })
+// }
 
 export async function setMatchedUsers() {
     firebase.firestore().collection('users').get().then(querySnapshot => {
@@ -128,7 +131,8 @@ export async function match(community, triggerMatch = false) {
                         startedAt: firebase.firestore.Timestamp.now(),
                         memberCount: 3,
                         community: community,
-                        messageCount: 0
+                        messageCount: 0,
+                        active: true
                     })
                     const data = {
                         startedAt: firebase.firestore.Timestamp.now(),
@@ -138,7 +142,8 @@ export async function match(community, triggerMatch = false) {
                     for (var u of users) {
                         firebase.firestore().doc('users/' + u).collection('chatHistory').doc(newChatroom.id).set(data)
                         firebase.firestore().doc('users/' + u).update({ settings: { chat: false, inChat: true }})
-                        sendNotification(u, {title: '配對成功', body:'本週已經成功配對聊天室，馬上開始和新朋友聊天吧！', data: {}})
+                        cloudFunction('sendNotification', {uid: u, message: {title: '配對成功', body:'本週已經成功配對聊天室，馬上開始和新朋友聊天吧！', data: {}}})
+                        // sendNotification(u, {title: '配對成功', body:'本週已經成功配對聊天室，馬上開始和新朋友聊天吧！', data: {}})
                     }
                 }
             }

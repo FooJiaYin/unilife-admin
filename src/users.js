@@ -31,7 +31,7 @@ import {
 } from "react-admin";
 import RichTextInput from "ra-input-rich-text";
 import styles from "./styles"; 
-import { setMatchedUsers, sendNotification } from './firebase';
+import { setMatchedUsers, cloudFunction } from './firebase';
 
 const UserFilter = (props) => {
   const { loading, permissions } = usePermissions();
@@ -44,6 +44,7 @@ const UserFilter = (props) => {
       <ReferenceInput label="學校" source="identity.community" reference="communities" alwaysOn >
           <SelectInput optionText="name" />
       </ReferenceInput>
+      <TextInput source="info.gender" alwaysOn />
       <NullableBooleanInput label="已驗證" source="verification.status" alwaysOn/>
       <NullableBooleanInput label="已開啟聊天" source="settings.chat" alwaysOn/>
       <NullableBooleanInput label="正在聊天" source="settings.inChat" alwaysOn/>
@@ -77,9 +78,9 @@ export const UserList = (props) => {
         <BooleanField source="settings.chat" label="開啟聊天" sortable={true} />
         <BooleanField source="settings.inChat" label="正在聊天" sortable={true} />
         <BooleanField source="verification.status" label="已驗證" sortable={true} />
-        <ShowButton label="" />
+        {/* <ShowButton label="" /> */}
         <EditButton label="" />
-        <DeleteButton label="" redirect={false}/>
+        {/* <DeleteButton label="" redirect={false}/> */}
       </Datagrid>
     </List>
     : 
@@ -119,7 +120,7 @@ export const UserShow = (props) => (
 
 export const UserCreate = (props) => (
   <Create {...props} >
-    <SimpleForm>
+    <SimpleForm submitOnEnter={false}>
       <TextInput source="id" />
       <TextInput label="姓名 "source="info.name" formClassName={styles().inlineBlock} />
       <ReferenceInput label="學校" source="identity.community" reference="communities">
@@ -153,7 +154,8 @@ export const UserEdit = (props) => {
         if (values.verification.status === true) {
           console.log(values)
           console.log(id)
-          sendNotification(id, {title: '驗證成功', body:'成功驗證學生身份，已開啟留言及聊天功能'})
+          cloudFunction('sendNotification', {uid: id, message: {title: '驗證成功', body:'成功驗證學生身份，已開啟留言及聊天功能', data: {}}})
+          // sendNotification(id, {title: '驗證成功', body:'成功驗證學生身份，已開啟留言及聊天功能'})
         }
     },
     [mutate],
@@ -161,7 +163,7 @@ export const UserEdit = (props) => {
 
   return (
     <Edit {...props}>
-      <SimpleForm save={save}>
+      <SimpleForm submitOnEnter={false} save={save}>
         <BooleanInput source="settings.chat" label="開啟聊天" formClassName={styles().inlineBlock} options={{ disabled: true, readOnly: true }} />
         <BooleanInput source="settings.inChat" label="正在聊天" formClassName={styles().inlineBlock} />
         <BooleanInput source="verification.status" label="已驗證" formClassName={styles().inlineBlock} />
@@ -197,7 +199,8 @@ export const UserEdit_editor = (props) => {
         }
         if (values.verification.status === true) {
           console.log(values)
-          sendNotification(id, {title: '驗證成功', body:'成功驗證學生身份，已開啟留言及聊天功能'})
+          cloudFunction('sendNotification', {uid: id, message: {title: '驗證成功', body:'成功驗證學生身份，已開啟留言及聊天功能', data: {}}})
+          // sendNotification(id, {title: '驗證成功', body:'成功驗證學生身份，已開啟留言及聊天功能'})
         }
     },
     [mutate],
@@ -210,7 +213,7 @@ export const UserEdit_editor = (props) => {
 
   return (
     <Edit {...props}>
-        <SimpleForm toolbar={<SaveToolbar />} save={save}>
+        <SimpleForm submitOnEnter={false} toolbar={<SaveToolbar />} save={save}>
           <TextField label="姓名 "source="info.name" formClassName={styles().inlineBlock} />
           <ReferenceField label="學校" source="identity.community" reference="communities" formClassName={styles().inlineBlock} >
             <TextField source="name" options={{ disabled: true, readOnly: true }} />

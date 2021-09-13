@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ArticleList, ArticleShow, ArticleCreate, ArticleEdit } from "./articles";
+import { ArticleList, ArticleShow, ArticleCreate, ArticleEdit,ArticleList_visitor, ArticleCreate_visitor, ArticleEdit_visitor } from "./articles";
 import { CommunityList, CommunityShow, CommunityCreate, CommunityEdit, DepartmentCreate } from "./communities";
 import { UserList, UserShow, UserCreate, UserEdit, UserEdit_editor } from "./users";
 import { ChatroomList, ChatroomShow, ChatroomCreate, ChatroomEdit } from "./chatrooms";
@@ -41,10 +41,11 @@ class App extends React.Component {
     firebase.auth().onAuthStateChanged(async user => {
       if (user) {
         let idTokenResult = await user.getIdTokenResult()
+        console.log(user)
         console.log(idTokenResult)
         this.setState({ accessRole: idTokenResult.claims.role })
       }
-    });
+    })
     authProvider.getPermissions().then(user => {
       if (user) {
         this.setState({ accessRole: user.role })
@@ -145,10 +146,19 @@ class App extends React.Component {
           dataProvider={dataProvider}
           authProvider={authProvider}
           // dashboard={Dashboard}
-        >        
-        <p>Access denied</p>
-
-        </Admin>
+        >   
+        <Resource
+          options={{label: '文章發布'}} 
+          name="articles"
+          icon={ArticleIcon}
+          list={ArticleList_visitor}
+          show={ArticleShow}
+          create={ArticleCreate_visitor}
+          edit={ArticleEdit_visitor}
+        />
+        <Resource name="users" />
+        <Resource name="communities"/>
+      </Admin>
       )
     );
   }
