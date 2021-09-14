@@ -41,6 +41,7 @@ import styles from "./styles";
 import { firebase } from './FIREBASE_CONFIG';
 import { getUserCommunity, cloudFunction } from './firebase';
 import { useFormState, useForm } from 'react-final-form';
+import './editor.css'
 // const ogs = require('open-graph-scraper-lite');
 // const urlMetadata = require('url-metadata')
 
@@ -223,6 +224,20 @@ export const ArticleShow = (props) => (
   </Show>
 );
 
+// const configureQuill = quill => quill.root.style['min-height'] = '400px';
+  // const configureQuill = quill => quill.getModule('toolbar').addHandler('image', function (value) {
+  //   var range = this.quill.getSelection();
+  //   var value = null;
+  //   // var value = prompt('please copy paste the image url here.');
+  //   setDialogOpen(true);
+  //   if(value){
+  //       this.quill.insertEmbed(range.index, 'image', value);
+  //   }
+  // });
+  // React.useEffect(() => {
+  //   setUid(firebase.auth().currentUser.uid)
+  // }, [])
+
 async function getArticleMeta(url) {
   // const url = values.meta.url
   // console.log(values)
@@ -290,6 +305,18 @@ const SelectStatus = (props) => {
   )
 }
 
+const ArticlePreview = ({ formData, ...rest }) => (
+  <div style={{width: 380, height: 100, display: 'flex', flexDirection: 'row', borderWidth: 1, borderColor: '#000'}}>
+    {/* <h1>預覽</h1> */}
+    <img src={formData.images? formData.images.src : ''}  height="100" width="100" style={{objectFit: 'cover', borderRadius: 6}} />
+    <div style={{color: '#4A4D57', paddingLeft: 16, height: 100, fontFamily: 'sans-serif', position: 'relative'}}>
+      <h1 style={{fontSize: 16, flexWrap: 'wrap', overflow: 'hidden', maxHeight: 42, margin: 0, paddingBottom: 3,}}>{formData.title}</h1>
+      <p style={{fontSize: 12, height: 34, margin: 0, overflow: 'hidden'}}>{formData.meta? formData.meta.abstract:''}</p>
+      <p style={{fontSize: 12, margin: 0, overflow: 'hidden', position: 'absolute', bottom: 0, width: 120}}>1天前</p>
+    </div>
+  </div>
+)
+
 export const ArticleCreate = (props) => {
   const [uid, setUid] = React.useState('')
   const [urlMeta, setUrlMeta] = React.useState({})
@@ -336,15 +363,7 @@ export const ArticleCreate = (props) => {
         <FileField source="src" title="title" />
       </FileInput>      
       <FormDataConsumer>
-        {({ formData, ...rest }) => <div style={{width: 380, height: 100, display: 'flex', flexDirection: 'row', borderWidth: 1, borderColor: '#000'}}>
-          {/* <h1>預覽</h1> */}
-          <img src={formData.images? formData.images.src : ''}  height="100" width="100" style={{objectFit: 'cover', borderRadius: 6}} />
-          <div style={{color: '#4A4D57', paddingLeft: 16, height: 100, fontFamily: 'sans-serif', position: 'relative'}}>
-          <h1 style={{fontSize: 16, flexWrap: 'wrap', overflow: 'hidden', maxHeight: 42, margin: 0, paddingBottom: 3,}}>{formData.title}</h1>
-          <p style={{fontSize: 12, height: 34, margin: 0, overflow: 'hidden'}}>{formData.meta? formData.meta.abstract:''}</p>
-          <p style={{fontSize: 12, margin: 0, overflow: 'hidden', position: 'absolute', bottom: 0, width: 120}}>1天前</p>
-          </div>
-        </div>}
+        {({formData, ...rest}) => <ArticlePreview formData={formData} />}
       </FormDataConsumer>
       {/* <TextInput source="meta.coverImage" label="縮圖（請複製上面的檔案名稱）" fullWidth={true} /> */}
     </SimpleForm>
@@ -396,7 +415,7 @@ export const ArticleCreate_visitor = (props) => {
       <UrlInput  formClassName={!isUrl? [styles().hidden] : []} />
       <TextInput source="meta.source" label="文章來源" initialValue={urlMeta.source} fullWidth={true} />
       <TextInput source="meta.abstract" label="摘要" initialValue={urlMeta.description} multiline={true} fullWidth={true} />
-      <RichTextInput source="content" label="內文" formClassName={isUrl? [styles().hidden] : []} // configureQuill={configureQuill}
+      <RichTextInput source="content" label="內文" formClassName={isUrl? [styles().hidden] : []} style={{height: 200}}// configureQuill={configureQuill}
         toolbar={[ [{ 'header': [2, false] }], ['bold', 'italic', 'underline', 'strike', { 'script': 'sub'}], [{ 'color': [] }, { 'background': [] }], [{ 'list': 'ordered'}, { 'list': 'bullet' }], ['link', 'image'], ['clean'] ]}
       />
       <TextInput source="images.src" label="縮圖連結" initialValue={urlMeta.imageUrl} fullWidth={true} />
@@ -404,15 +423,7 @@ export const ArticleCreate_visitor = (props) => {
         <FileField source="src" title="title" />
       </FileInput>
       <FormDataConsumer>
-        {({ formData, ...rest }) => <div style={{width: 380, height: 100, display: 'flex', flexDirection: 'row', borderWidth: 1, borderColor: '#000'}}>
-          {/* <h1>預覽</h1> */}
-          <img src={formData.images? formData.images.src : ''}  height="100" width="100" style={{objectFit: 'cover', borderRadius: 6}} />
-          <div style={{color: '#4A4D57', paddingLeft: 16, height: 100, fontFamily: 'sans-serif', position: 'relative'}}>
-          <h1 style={{fontSize: 16, flexWrap: 'wrap', overflow: 'hidden', maxHeight: 42, margin: 0, paddingBottom: 3,}}>{formData.title}</h1>
-          <p style={{fontSize: 12, height: 34, margin: 0, overflow: 'hidden'}}>{formData.meta? formData.meta.abstract:''}</p>
-          <p style={{fontSize: 12, margin: 0, overflow: 'hidden', position: 'absolute', bottom: 0, width: 120}}>1天前</p>
-          </div>
-        </div>}
+        {({formData, ...rest}) => <ArticlePreview formData={formData} />}
       </FormDataConsumer>
       {/* <TextInput source="meta.coverImage" label="縮圖（請複製上面的檔案名稱）" fullWidth={true} /> */}
       <RadioButtonGroupInput source="status" label="發布狀態" choices={[
@@ -432,19 +443,7 @@ export const ArticleEdit = (props) => {
   const [isUrl, toggleUrl] = React.useState(false)
   const [reviewedBy, setReviewedBy] = React.useState('')
   console.log(props)
-  
-  // const configureQuill = quill => quill.getModule('toolbar').addHandler('image', function (value) {
-  //   var range = this.quill.getSelection();
-  //   var value = null;
-  //   // var value = prompt('please copy paste the image url here.');
-  //   setDialogOpen(true);
-  //   if(value){
-  //       this.quill.insertEmbed(range.index, 'image', value);
-  //   }
-  // });
-  // React.useEffect(() => {
-  //   setUid(firebase.auth().currentUser.uid)
-  // }, [])
+
   return(
     <Edit {...props}>
       {/* <Dialog
@@ -500,15 +499,7 @@ export const ArticleEdit = (props) => {
           <FileField source="src" title="title" />
         </FileInput>
         <FormDataConsumer>
-          {({ formData, ...rest }) => <div style={{width: 380, height: 100, display: 'flex', flexDirection: 'row', borderWidth: 1, borderColor: '#000'}}>
-          {/* <h1>預覽</h1> */}
-          <img src={formData.images? formData.images.src : ''}  height="100" width="100" style={{objectFit: 'cover', borderRadius: 6}} />
-          <div style={{color: '#4A4D57', paddingLeft: 16, height: 100, fontFamily: 'sans-serif', position: 'relative'}}>
-          <h1 style={{fontSize: 16, flexWrap: 'wrap', overflow: 'hidden', maxHeight: 42, margin: 0, paddingBottom: 3,}}>{formData.title}</h1>
-          <p style={{fontSize: 12, height: 34, margin: 0, overflow: 'hidden'}}>{formData.meta? formData.meta.abstract:''}</p>
-          <p style={{fontSize: 12, margin: 0, overflow: 'hidden', position: 'absolute', bottom: 0, width: 120}}>1天前</p>
-          </div>
-        </div>}
+          {({formData, ...rest}) => <ArticlePreview formData={formData} />}
         </FormDataConsumer>
         {/* <TextInput source="meta.coverImage" label="縮圖（請複製上面的檔案名稱）" fullWidth={true} /> */}
       </SimpleForm>
@@ -560,7 +551,7 @@ export const ArticleEdit_visitor = (props) => {
       <UrlInput  formClassName={!isUrl? [styles().hidden] : []} />
       <TextInput source="meta.source" label="文章來源" fullWidth={true} />
       <TextInput source="meta.abstract" label="摘要" multiline={true} fullWidth={true} />
-      <RichTextInput source="content" label="內文" formClassName={isUrl? [styles().hidden] : []} // configureQuill={configureQuill}
+      <RichTextInput source="content" label="內文" formClassName={isUrl? [styles().hidden] : []} // configureQuill={() => configureQuill()}
         toolbar={[ [{ 'header': [2, false] }], ['bold', 'italic', 'underline', 'strike', { 'script': 'sub'}], [{ 'color': [] }, { 'background': [] }], [{ 'list': 'ordered'}, { 'list': 'bullet' }], ['link', 'image'], ['clean'] ]}
       />
       <TextInput source="images.src" label="縮圖連結" fullWidth={true}  formClassName={!isUrl? [styles().hidden] : []} />
@@ -568,15 +559,7 @@ export const ArticleEdit_visitor = (props) => {
           <FileField source="src" title="title" />
       </FileInput>
       <FormDataConsumer>
-        {({ formData, ...rest }) => <div style={{width: 380, height: 100, display: 'flex', flexDirection: 'row', borderWidth: 1, borderColor: '#000'}}>
-          {/* <h1>預覽</h1> */}
-          <img src={formData.images? formData.images.src : ''}  height="100" width="100" style={{objectFit: 'cover', borderRadius: 6}} />
-          <div style={{color: '#4A4D57', paddingLeft: 16, height: 100, fontFamily: 'sans-serif', position: 'relative'}}>
-          <h1 style={{fontSize: 16, flexWrap: 'wrap', overflow: 'hidden', maxHeight: 42, margin: 0, paddingBottom: 3,}}>{formData.title}</h1>
-          <p style={{fontSize: 12, height: 34, margin: 0, overflow: 'hidden'}}>{formData.meta? formData.meta.abstract:''}</p>
-          <p style={{fontSize: 12, margin: 0, overflow: 'hidden', position: 'absolute', bottom: 0, width: 120}}>1天前</p>
-          </div>
-        </div>}
+          {({formData, ...rest}) => <ArticlePreview formData={formData} />}
       </FormDataConsumer>
       {/* <TextInput source="meta.coverImage" label="縮圖（請複製上面的檔案名稱）" fullWidth={true} /> */}
       <RadioButtonGroupInput source="status" label="發布狀態" choices={[
