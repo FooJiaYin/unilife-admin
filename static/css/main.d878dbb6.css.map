@@ -1,0 +1,1 @@
+{"version":3,"sources":["editor.css"],"names":[],"mappings":"AAAA,WACI,gBAAiB","file":"static/css/main.d878dbb6.css","sourcesContent":[".ql-editor {\r\n    min-height: 200px\r\n}\n\n\n// WEBPACK FOOTER //\n// ./src/editor.css"],"sourceRoot":""}
