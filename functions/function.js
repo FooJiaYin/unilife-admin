@@ -92,12 +92,37 @@ function checkEmptyChatHistory() {
 }
 
 function setArticles() {
-    admin.firestore.collection('articles').get().then(querySnapshot =>{
+    console.log(admin.firestore.Timestamp.now(), admin.firestore.Timestamp.now().toDate())
+    admin.firestore().collection('articles').get().then(querySnapshot =>{
         querySnapshot.forEach(async snapshot => {
             const data = await snapshot.data()
-            if(data.url && data.url != '') {
-                console.log(data.url)
+            if(!(data.publishedAt instanceof admin.firestore.Timestamp)) {
+                console.log(data.title, data.publishedAt, admin.firestore.Timestamp.fromMillis(data.publishedAt).toDate())
+                snapshot.ref.update({
+                    publishedAt: admin.firestore.Timestamp.fromMillis(data.publishedAt)
+                })
             }
+            
+            // if(!data.reviewedBy || data.reviewedBy == '') {
+            //     if (data.status == 'published') {
+            //         // console.log(data.title)
+            //     snapshot.ref.update({
+            //         reviewedBy: "HW6TgaKXhmc7OBdqhPGacfXVQR12"
+            //     })
+            //     }
+            // }
+            // else console.log(data.reviewedBy)
+            // if(data.meta.url && data.meta.url != '') {
+            //     console.log(data.meta.url)
+            //     snapshot.ref.update({
+            //         type: "link"
+            //     })
+            // }
+            // else {
+            //     snapshot.ref.update({
+            //         type: "article"
+            //     })
+            // }
         });
     })
 }

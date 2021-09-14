@@ -219,7 +219,7 @@ export const UserEdit_editor = (props) => {
             <TextField source="name" options={{ disabled: true, readOnly: true }} />
           </ReferenceField>
           <TextField source="info.email" label="Email" formClassName={styles().inlineBlock}  options={{ disabled: true, readOnly: true }} />
-          <BooleanInput source="verification.status" label="已驗證"/>
+          <BooleanInput source="verification.status" label="已驗證" onChange={(e)=> console.log(e)} />
         </SimpleForm>
     </Edit>
   )

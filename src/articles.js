@@ -59,9 +59,10 @@ const categories = [
 ]
 
 const tags = [
-  { id: 'operation', name: '營運公告' },
-  { id: 'newbie', name: '新生懶人包' },
+  { id: 'operation', name: '小攸公告' },
+  { id: 'newbie', name: '校園懶人包' },
   { id: 'clubs', name: '社團博覽會' },
+  { id: 'discussion', name: '討論區' },
   { id: '0', name: '影集戲劇' },
   { id: '1', name: '國際政經' },
   { id: '2', name: '時事評論' },
@@ -318,7 +319,7 @@ export const ArticleCreate = (props) => {
       <DateTimeInput source="publishedAt" label="發佈時間" initialValue={Date.now()} formClassName={styles().inlineBlock} />
       <SelectInput source="category" label="分類" choices={categories} formClassName={styles().inlineBlock} />
       <BooleanInput source="pinned" label="置頂" initialValue={false} formClassName={styles().inlineBlock} />
-      <AutocompleteArrayInput source="tags" label="標籤" choices={tags} fullWidth={true} />
+      <AutocompleteArrayInput source="tags" label="標籤" initialValue={[]} choices={tags} fullWidth={true} />
       <RadioButtonGroupInput source="type" label="類型" initialValue={'article'} formClassName={styles().inlineBlock}
         onChange={(input) => toggleUrl(input == 'link')} choices={[
           { id: 'article', name: '文章' },
@@ -330,13 +331,21 @@ export const ArticleCreate = (props) => {
       <RichTextInput source="content" label="內文" formClassName={isUrl? [styles().hidden] : []} // configureQuill={configureQuill}
         toolbar={[ [{ 'header': [2, false] }], ['bold', 'italic', 'underline', 'strike', { 'script': 'sub'}], [{ 'color': [] }, { 'background': [] }], [{ 'list': 'ordered'}, { 'list': 'bullet' }], ['link', 'image'], ['clean'] ]}
       />
-      <TextInput source="images.src" label="縮圖連結" initialValue={urlMeta.imageUrl} fullWidth={true}  formClassName={!isUrl? [styles().hidden] : []} />
-      <FormDataConsumer>
-        {({ formData, ...rest }) => <img src={formData.images? formData.images.src : ''}  height="120" />}
-      </FormDataConsumer>
-      <FileInput source="images" label="縮圖" accept=".jpg,.png" formClassName={isUrl? [styles().hidden] : []} >
+      <TextInput source="images.src" label="縮圖連結" initialValue={urlMeta.imageUrl} fullWidth={true} />
+      <FileInput source="images" label="縮圖" accept=".jpg,.png" >
         <FileField source="src" title="title" />
       </FileInput>      
+      <FormDataConsumer>
+        {({ formData, ...rest }) => <div style={{width: 380, height: 100, display: 'flex', flexDirection: 'row', borderWidth: 1, borderColor: '#000'}}>
+          {/* <h1>預覽</h1> */}
+          <img src={formData.images? formData.images.src : ''}  height="100" width="100" style={{objectFit: 'cover', borderRadius: 6}} />
+          <div style={{color: '#4A4D57', paddingLeft: 16, height: 100, fontFamily: 'sans-serif', position: 'relative'}}>
+          <h1 style={{fontSize: 16, flexWrap: 'wrap', overflow: 'hidden', maxHeight: 42, margin: 0, paddingBottom: 3,}}>{formData.title}</h1>
+          <p style={{fontSize: 12, height: 34, margin: 0, overflow: 'hidden'}}>{formData.meta? formData.meta.abstract:''}</p>
+          <p style={{fontSize: 12, margin: 0, overflow: 'hidden', position: 'absolute', bottom: 0, width: 120}}>1天前</p>
+          </div>
+        </div>}
+      </FormDataConsumer>
       {/* <TextInput source="meta.coverImage" label="縮圖（請複製上面的檔案名稱）" fullWidth={true} /> */}
     </SimpleForm>
   </Create>
@@ -378,7 +387,7 @@ export const ArticleCreate_visitor = (props) => {
       <DateTimeInput source="publishedAt" label="發佈時間" initialValue={Date.now()} formClassName={styles().inlineBlock} />
       <TextInput source="category" label="分類" initialValue={'local'}  formClassName={[styles().inlineBlock, styles().hidden]} />
       <BooleanInput source="pinned" label="置頂" initialValue={false} formClassName={[styles().inlineBlock, styles().hidden]} />
-      <AutocompleteArrayInput source="tags" label="標籤" choices={tags} fullWidth={true} />
+      <AutocompleteArrayInput source="tags" label="標籤" choices={tags} initialValue={[]} fullWidth={true} />
       <RadioButtonGroupInput source="type" label="類型" initialValue={'article'} formClassName={styles().inlineBlock}
         onChange={(input) => toggleUrl(input == 'link')} choices={[
           { id: 'article', name: '文章' },
@@ -390,13 +399,21 @@ export const ArticleCreate_visitor = (props) => {
       <RichTextInput source="content" label="內文" formClassName={isUrl? [styles().hidden] : []} // configureQuill={configureQuill}
         toolbar={[ [{ 'header': [2, false] }], ['bold', 'italic', 'underline', 'strike', { 'script': 'sub'}], [{ 'color': [] }, { 'background': [] }], [{ 'list': 'ordered'}, { 'list': 'bullet' }], ['link', 'image'], ['clean'] ]}
       />
-      <TextInput source="images.src" label="縮圖連結" initialValue={urlMeta.imageUrl} fullWidth={true}  formClassName={!isUrl? [styles().hidden] : []} />
-      <FormDataConsumer>
-        {({ formData, ...rest }) => <img src={formData.images? formData.images.src : ''}  height="120" />}
-      </FormDataConsumer>
-      <FileInput source="images" label="縮圖" accept=".jpg,.png" formClassName={isUrl? [styles().hidden] : []} >
+      <TextInput source="images.src" label="縮圖連結" initialValue={urlMeta.imageUrl} fullWidth={true} />
+      <FileInput source="images" label="縮圖" accept=".jpg,.png" >
         <FileField source="src" title="title" />
       </FileInput>
+      <FormDataConsumer>
+        {({ formData, ...rest }) => <div style={{width: 380, height: 100, display: 'flex', flexDirection: 'row', borderWidth: 1, borderColor: '#000'}}>
+          {/* <h1>預覽</h1> */}
+          <img src={formData.images? formData.images.src : ''}  height="100" width="100" style={{objectFit: 'cover', borderRadius: 6}} />
+          <div style={{color: '#4A4D57', paddingLeft: 16, height: 100, fontFamily: 'sans-serif', position: 'relative'}}>
+          <h1 style={{fontSize: 16, flexWrap: 'wrap', overflow: 'hidden', maxHeight: 42, margin: 0, paddingBottom: 3,}}>{formData.title}</h1>
+          <p style={{fontSize: 12, height: 34, margin: 0, overflow: 'hidden'}}>{formData.meta? formData.meta.abstract:''}</p>
+          <p style={{fontSize: 12, margin: 0, overflow: 'hidden', position: 'absolute', bottom: 0, width: 120}}>1天前</p>
+          </div>
+        </div>}
+      </FormDataConsumer>
       {/* <TextInput source="meta.coverImage" label="縮圖（請複製上面的檔案名稱）" fullWidth={true} /> */}
       <RadioButtonGroupInput source="status" label="發布狀態" choices={[
           { id: 'draft', name: '草稿' },
@@ -411,7 +428,7 @@ export const ArticleEdit = (props) => {
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const [images, setImages] = React.useState(['1.jpg', '2.jpg']);
   const [age, setAge] = React.useState('');
-  const [uid, setUid] = React.useState('')
+  // const [uid, setUid] = React.useState('')
   const [isUrl, toggleUrl] = React.useState(false)
   const [reviewedBy, setReviewedBy] = React.useState('')
   console.log(props)
@@ -425,9 +442,9 @@ export const ArticleEdit = (props) => {
   //       this.quill.insertEmbed(range.index, 'image', value);
   //   }
   // });
-  React.useEffect(() => {
-    setUid(firebase.auth().currentUser.uid)
-  }, [])
+  // React.useEffect(() => {
+  //   setUid(firebase.auth().currentUser.uid)
+  // }, [])
   return(
     <Edit {...props}>
       {/* <Dialog
@@ -479,12 +496,20 @@ export const ArticleEdit = (props) => {
           toolbar={[ [{ 'header': [2, false] }], ['bold', 'italic', 'underline', 'strike', { 'script': 'sub'}], [{ 'color': [] }, { 'background': [] }], [{ 'list': 'ordered'}, { 'list': 'bullet' }], ['link', 'image'], ['clean'] ]}
         />
         <TextInput source="images.src" label="縮圖連結" fullWidth={true} />
-        <FormDataConsumer>
-          {({ formData, ...rest }) => <img src={formData.images? formData.images.src : ''}  height="120" />}
-        </FormDataConsumer>
         <FileInput source="images" label="縮圖" accept=".jpg,.png">
-          {/* <FileField source="src" title="title" /> */}
+          <FileField source="src" title="title" />
         </FileInput>
+        <FormDataConsumer>
+          {({ formData, ...rest }) => <div style={{width: 380, height: 100, display: 'flex', flexDirection: 'row', borderWidth: 1, borderColor: '#000'}}>
+          {/* <h1>預覽</h1> */}
+          <img src={formData.images? formData.images.src : ''}  height="100" width="100" style={{objectFit: 'cover', borderRadius: 6}} />
+          <div style={{color: '#4A4D57', paddingLeft: 16, height: 100, fontFamily: 'sans-serif', position: 'relative'}}>
+          <h1 style={{fontSize: 16, flexWrap: 'wrap', overflow: 'hidden', maxHeight: 42, margin: 0, paddingBottom: 3,}}>{formData.title}</h1>
+          <p style={{fontSize: 12, height: 34, margin: 0, overflow: 'hidden'}}>{formData.meta? formData.meta.abstract:''}</p>
+          <p style={{fontSize: 12, margin: 0, overflow: 'hidden', position: 'absolute', bottom: 0, width: 120}}>1天前</p>
+          </div>
+        </div>}
+        </FormDataConsumer>
         {/* <TextInput source="meta.coverImage" label="縮圖（請複製上面的檔案名稱）" fullWidth={true} /> */}
       </SimpleForm>
     </Edit> 
@@ -492,16 +517,16 @@ export const ArticleEdit = (props) => {
 }
 
 export const ArticleEdit_visitor = (props) => {
-  const [uid, setUid] = React.useState('')
-  const [community, setCommunity] = React.useState('')
+  // const [uid, setUid] = React.useState('')
+  // const [community, setCommunity] = React.useState('')
   const [urlMeta, setUrlMeta] = React.useState({})
   const [isUrl, toggleUrl] = React.useState(false)
-  async function getCommunity() {
-    const comm = await getUserCommunity()
-    setCommunity(comm)
-    console.log(comm)
+  // async function getCommunity() {
+  //   const comm = await getUserCommunity()
+  //   setCommunity(comm)
+  //   console.log(comm)
     
-  }
+  // }
   async function submitLink(values) {
     if (values && values.meta && values.meta.url) {
       toggleUrl(true)
@@ -509,10 +534,10 @@ export const ArticleEdit_visitor = (props) => {
       setUrlMeta(meta)
     }
   } 
-  React.useEffect(() => {
-    setUid(firebase.auth().currentUser.uid)
-    getCommunity()
-  }, [])
+  // React.useEffect(() => {
+    // setUid(firebase.auth().currentUser.uid)
+  //   getCommunity()
+  // }, [])
   return (
   <Edit title={<span>編輯文章</span>} actions={<span></span>} {...props} >
     <SimpleForm submitOnEnter={false}>
@@ -539,11 +564,20 @@ export const ArticleEdit_visitor = (props) => {
         toolbar={[ [{ 'header': [2, false] }], ['bold', 'italic', 'underline', 'strike', { 'script': 'sub'}], [{ 'color': [] }, { 'background': [] }], [{ 'list': 'ordered'}, { 'list': 'bullet' }], ['link', 'image'], ['clean'] ]}
       />
       <TextInput source="images.src" label="縮圖連結" fullWidth={true}  formClassName={!isUrl? [styles().hidden] : []} />
-      <FormDataConsumer>
-        {({ formData, ...rest }) => <img src={formData.images? formData.images.src : ''}  height="120" />}
-      </FormDataConsumer>
-      <FileInput source="images" label="縮圖" accept=".jpg,.png" formClassName={isUrl? [styles().hidden] : []} >
+      <FileInput source="images" label="縮圖" accept=".jpg,.png" >
+          <FileField source="src" title="title" />
       </FileInput>
+      <FormDataConsumer>
+        {({ formData, ...rest }) => <div style={{width: 380, height: 100, display: 'flex', flexDirection: 'row', borderWidth: 1, borderColor: '#000'}}>
+          {/* <h1>預覽</h1> */}
+          <img src={formData.images? formData.images.src : ''}  height="100" width="100" style={{objectFit: 'cover', borderRadius: 6}} />
+          <div style={{color: '#4A4D57', paddingLeft: 16, height: 100, fontFamily: 'sans-serif', position: 'relative'}}>
+          <h1 style={{fontSize: 16, flexWrap: 'wrap', overflow: 'hidden', maxHeight: 42, margin: 0, paddingBottom: 3,}}>{formData.title}</h1>
+          <p style={{fontSize: 12, height: 34, margin: 0, overflow: 'hidden'}}>{formData.meta? formData.meta.abstract:''}</p>
+          <p style={{fontSize: 12, margin: 0, overflow: 'hidden', position: 'absolute', bottom: 0, width: 120}}>1天前</p>
+          </div>
+        </div>}
+      </FormDataConsumer>
       {/* <TextInput source="meta.coverImage" label="縮圖（請複製上面的檔案名稱）" fullWidth={true} /> */}
       <RadioButtonGroupInput source="status" label="發布狀態" choices={[
           { id: 'draft', name: '草稿' },
