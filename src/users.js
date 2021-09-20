@@ -3,6 +3,7 @@ import * as React from "react";
 // tslint:disable-next-line:no-var-requires
 import {
   usePermissions,
+  useRecordContext,
   useMutation,
   Datagrid,
   List,
@@ -32,6 +33,23 @@ import {
 import RichTextInput from "ra-input-rich-text";
 import styles from "./styles"; 
 import { setMatchedUsers, cloudFunction } from './firebase';
+import firebase from "firebase";
+
+// const ChatHistory = ({uid, ...props}) => {
+//   const chatrooms = []
+//   React.useEffect(() => {
+//     firebase.firestore().doc('users/' + uid).collection('chatHistory').get().then(querySnapshot => {
+//       querySnapshot.forEach(snapshot => {
+//         const link = "/#/chatrooms/z4iCzWjYH2OLpYhn1jVf8XUwb8m2/"
+//         chatroom.push(<a href="/#/chatrooms/z4iCzWjYH2OLpYhn1jVf8XUwb8m2/+{snapshot.id}")
+//       })
+//     })
+//       // cloudFunction('getArticleMeta', {url: "https://www.thenewslens.com/article/156173", timeout: 15000}).then
+//   }, [])
+//   return (
+    
+//   )
+// }
 
 const UserFilter = (props) => {
   const { loading, permissions } = usePermissions();
@@ -138,6 +156,7 @@ export const UserCreate = (props) => (
 
 export const UserEdit = (props) => {
   const [mutate] = useMutation();
+  const record = useRecordContext();
   const save = React.useCallback(
     async (values) => {
       const id = values.id
@@ -177,6 +196,7 @@ export const UserEdit = (props) => {
         <TextInput source="info.email" label="Email" />
         <TextInput label="學位" source="identity.degree"  formClassName={styles().inlineBlock} />
         <TextInput label="年級" source="identity.grade" formClassName={styles().inlineBlock} />
+        {/* <ChatHistory /> */}
       </SimpleForm>
     </Edit>
   )

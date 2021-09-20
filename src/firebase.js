@@ -40,6 +40,21 @@ export async function cloudFunction(funcName, data) {
 //             querySnapshot.forEach(snapshot => sendNotification(snapshot.id, message));
 //         })
 // }
+export async function sendNotification(id, message) {
+    cloudFunction('sendNotification', {uid: id, message: message})
+}
+
+export async function resetChatStatus() {
+    firebase.firestore().collection('users').get().then(querySnapshot => {
+        var i = 0
+        querySnapshot.forEach(async snapshot => {
+            let chatHistory = await snapshot.ref.collection('chatHistory').get()
+            let data = await snapshot.data()
+            // sendNotification(data.id, {title: '配對成功', body:'本週已經成功配對聊天室，馬上開始和新朋友聊天吧！', data: {}})
+            snapshot.ref.update({ settings: { chat: false, inChat: false }})
+        })
+    }) 
+}
 
 export async function setMatchedUsers() {
     firebase.firestore().collection('users').get().then(querySnapshot => {
